@@ -2,76 +2,151 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>换装小屋</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
   body {
-    font-family: "PingFang SC", sans-serif;
-    background: linear-gradient(180deg, #ffe9f3 0%, #dff3ff 100%);
-    min-height: 100vh;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(170deg, #ffe3f0 0%, #f3e7ff 45%, #dff1ff 100%);
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    color: #5a5060;
   }
+  /* 背景装饰 */
+  body::before, body::after {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: .5;
+    pointer-events: none;
+  }
+  body::before { width: 340px; height: 340px; background: #ffc4dd; top: -80px; left: -80px; }
+  body::after  { width: 300px; height: 300px; background: #bcd9ff; bottom: -90px; right: -70px; }
+
   .game {
+    position: relative;
     display: flex;
-    gap: 24px;
-    padding: 24px;
+    gap: 20px;
+    padding: 20px;
     align-items: stretch;
+    max-height: 100%;
+  }
+
+  /* ---------- 角色舞台 ---------- */
+  .stage-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
   }
   .stage {
     position: relative;
-    width: 512px;
-    height: 768px;
-    background: #fff;
-    border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(200, 120, 160, .25);
+    width: 460px;
+    aspect-ratio: 2 / 3;
+    max-height: calc(100vh - 130px);
+    background: radial-gradient(circle at 50% 12%, #fffdfa 0%, #fdf2f7 55%, #f4ecff 100%);
+    border-radius: 28px;
+    box-shadow: 0 12px 40px rgba(190, 130, 175, .22), inset 0 0 0 1px rgba(255, 255, 255, .8);
     overflow: hidden;
     flex-shrink: 0;
   }
+  /* 舞台地面光晕 */
+  .stage::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 3%;
+    width: 62%;
+    height: 7%;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse, rgba(200, 170, 220, .28), transparent 70%);
+    pointer-events: none;
+  }
   .stage img {
     position: absolute;
-    left: 0;
-    top: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
     user-select: none;
   }
+  /* 换装淡入用 animation，不依赖 onload 状态（曾因竞态导致图层不可见） */
+  .stage img.fade { animation: fadeIn .18s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .stage .spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #c8a8bd;
+    transition: opacity .3s;
+  }
+  .stage .spinner.hide { opacity: 0; }
+
+  /* ---------- 右侧面板 ---------- */
   .panel {
-    width: 360px;
-    background: #fff;
-    border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(140, 160, 220, .25);
-    padding: 16px;
+    width: 372px;
     display: flex;
     flex-direction: column;
+    background: rgba(255, 255, 255, .82);
+    backdrop-filter: blur(12px);
+    border-radius: 28px;
+    box-shadow: 0 12px 40px rgba(150, 160, 215, .18);
+    padding: 18px 16px;
+    min-height: 0;
   }
   h1 {
-    font-size: 20px;
-    color: #d46a9c;
+    font-size: 19px;
     text-align: center;
+    color: #d0689c;
+    letter-spacing: 3px;
     margin-bottom: 12px;
+    flex-shrink: 0;
   }
+
   .tabs {
     display: flex;
     gap: 6px;
-    flex-wrap: wrap;
     margin-bottom: 12px;
+    flex-shrink: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
   }
+  .tabs::-webkit-scrollbar { display: none; }
   .tab {
+    flex: 1;
+    min-width: 58px;
+    min-height: 52px;
     border: none;
-    background: #f2f3f7;
+    background: #f4f2f8;
     border-radius: 16px;
-    padding: 6px 14px;
-    font-size: 14px;
     cursor: pointer;
-    color: #667;
+    color: #8b8496;
+    font-size: 11px;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    transition: background .15s, color .15s, transform .1s;
   }
+  .tab .ico { font-size: 18px; line-height: 1; }
+  .tab:active { transform: scale(.95); }
   .tab.active {
-    background: #ff8fb8;
+    background: linear-gradient(160deg, #ffa8c8, #ff8fb8);
     color: #fff;
+    box-shadow: 0 4px 12px rgba(255, 143, 184, .4);
   }
+
   .grid {
     flex: 1;
     overflow-y: auto;
@@ -79,85 +154,246 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     align-content: start;
+    min-height: 120px;
+    scrollbar-width: thin;
   }
   .item {
-    border: 2px solid #eee;
-    border-radius: 12px;
-    background: #fafafa;
+    position: relative;
+    min-width: 0;
+    border: 2px solid #f0eef4;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #fdfdff, #f7f5fa);
     cursor: pointer;
-    padding: 0;
     overflow: hidden;
-    aspect-ratio: 2 / 3;
+    aspect-ratio: 1;
+    transition: border-color .15s, transform .1s, box-shadow .15s;
+    padding: 0;
   }
+  .item:active { transform: scale(.95); }
   .item.active {
     border-color: #ff8fb8;
-    background: #fff0f6;
+    box-shadow: 0 0 0 3px rgba(255, 143, 184, .18);
+    background: linear-gradient(180deg, #fff6fa, #ffeaf3);
   }
   .item img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    padding: 4px;
   }
-  .none {
+  .item.none {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #aaa;
+    color: #b9b3c4;
     font-size: 13px;
+    font-family: inherit;
   }
+
   .btns {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
     margin-top: 12px;
+    flex-shrink: 0;
   }
   .btns button {
-    flex: 1;
     border: none;
     border-radius: 16px;
-    padding: 10px 0;
-    font-size: 15px;
+    min-height: 46px;
+    font-size: 14px;
+    font-family: inherit;
     cursor: pointer;
     color: #fff;
+    transition: transform .1s, filter .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
   }
-  #btnRandom { background: #7fb5ff; }
-  #btnReset  { background: #c3c9d4; }
+  .btns button:active { transform: scale(.96); }
+  .btns button:hover { filter: brightness(1.06); }
+  #btnRandom { background: linear-gradient(160deg, #93c0ff, #6fa4f5); }
+  #btnReset  { background: linear-gradient(160deg, #d3d8e2, #bcc3d1); }
+  #btnSave   { background: linear-gradient(160deg, #ffb45c, #ff9838); }
+  #btnKeep   { background: linear-gradient(160deg, #a6e3a1, #7fd07a); }
+
+  /* ---------- 套装收藏 ---------- */
+  .sets {
+    margin-top: 12px;
+    flex-shrink: 0;
+  }
+  .sets-title {
+    font-size: 12px;
+    color: #a89fb2;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .sets-list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    min-height: 4px;
+    padding-bottom: 2px;
+  }
+  .sets-list::-webkit-scrollbar { display: none; }
+  .set {
+    position: relative;
+    flex-shrink: 0;
+    width: 54px;
+    height: 78px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #f0eef4;
+    cursor: pointer;
+    background: #faf9fc;
+    transition: transform .1s, border-color .15s;
+  }
+  .set:active { transform: scale(.94); }
+  .set img { width: 100%; height: 100%; object-fit: cover; }
+  .set .del {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(120, 110, 130, .55);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  /* ---------- 提示 ---------- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 12%;
+    transform: translate(-50%, 12px);
+    background: rgba(70, 60, 80, .86);
+    color: #fff;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 22px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 99;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  /* ---------- 手机竖屏 ---------- */
+  @media (max-width: 860px), (max-height: 700px) {
+    body { display: block; overflow-y: auto; }
+    .game {
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      max-height: none;
+    }
+    /* 手机竖屏：舞台宽度按视口高度反推，保持 2:3 不变形 */
+    .stage { width: min(100%, 52vh); margin: 0 auto; max-height: none; }
+    .panel {
+      width: 100%;
+      flex: none;
+      padding: 14px 12px;
+    }
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      max-height: 44vh;
+    }
+    .tab { min-height: 48px; font-size: 10px; }
+    .sets { margin-top: 10px; }
+  }
 </style>
 </head>
 <body>
 <div class="game">
-  <div class="stage" id="stage"></div>
+  <div class="stage-wrap">
+    <div class="stage" id="stage">
+      <div class="spinner" id="spinner">加载素材…</div>
+    </div>
+  </div>
+
   <div class="panel">
-    <h1>换装小屋</h1>
+    <h1>换 装 小 屋</h1>
     <div class="tabs" id="tabs"></div>
     <div class="grid" id="grid"></div>
+
     <div class="btns">
-      <button id="btnRandom">随机穿搭</button>
-      <button id="btnReset">重置</button>
+      <button id="btnRandom">🎲 随机穿搭</button>
+      <button id="btnReset">↺ 重置</button>
+      <button id="btnSave">📷 保存穿搭图</button>
+      <button id="btnKeep">💖 收藏这套</button>
+    </div>
+
+    <div class="sets">
+      <div class="sets-title"><span>我的套装</span><span id="setsHint"></span></div>
+      <div class="sets-list" id="setsList"></div>
     </div>
   </div>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
-// 品类定义：z 为图层顺序（小在下），dress 穿上时隐藏的品类
+// ---------- 配置 ----------
+// z 为图层顺序（小在下）；dress 穿上时隐藏 hide 里的品类
 const CATS = [
-  { key: "hair",   name: "发型",   z: 11, count: 6 },
-  { key: "shoes",  name: "鞋子",   z: 12, count: 4 },
-  { key: "top",    name: "上衣",   z: 13, count: 6 },
-  { key: "bottom", name: "下装",   z: 14, count: 6 },
-  { key: "dress",  name: "连衣裙", z: 15, count: 6, hide: ["top", "bottom"] },
-  { key: "acc",    name: "饰品",   z: 20, count: 4 },
+  { key: "hair",   name: "发型",   ico: "💇", z: 11, count: 6 },
+  { key: "shoes",  name: "鞋子",   ico: "👟", z: 12, count: 4 },
+  { key: "top",    name: "上衣",   ico: "👕", z: 13, count: 6 },
+  { key: "bottom", name: "下装",   ico: "👖", z: 14, count: 6 },
+  { key: "dress",  name: "连衣裙", ico: "👗", z: 15, count: 6, hide: ["top", "bottom"] },
+  { key: "acc",    name: "饰品",   ico: "🎀", z: 20, count: 4 },
 ];
+const BODY_Z = 10;
+const SETS_KEY = "dressup_sets_v1";
+const MAX_SETS = 8;
 
 const wearing = {};   // key -> "01".."06" | null
+let activeCat = "hair";
 
+// ---------- DOM ----------
 const stage = document.getElementById("stage");
+const spinner = document.getElementById("spinner");
 const tabsEl = document.getElementById("tabs");
 const gridEl = document.getElementById("grid");
+const setsListEl = document.getElementById("setsList");
+const setsHintEl = document.getElementById("setsHint");
+const toastEl = document.getElementById("toast");
 
-// 素体固定底层
-const bodyImg = mkImg("res/body/body_00.webp", 10);
-stage.appendChild(bodyImg);
+// ---------- 音效（Web Audio 程序化生成，零资源） ----------
+let audioCtx = null;
+function beep(freq, dur = 0.08, type = "triangle", vol = 0.06) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const t = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    gain.gain.setValueAtTime(vol, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(t);
+    osc.stop(t + dur);
+  } catch (e) { /* 静音环境忽略 */ }
+}
+const sfxWear   = () => beep(880, 0.07);
+const sfxRemove = () => beep(420, 0.07);
+const sfxTab    = () => beep(660, 0.05, "sine");
+const sfxKeep   = () => { beep(784, 0.09); setTimeout(() => beep(1046, 0.12), 90); };
+const sfxSave   = () => { beep(587, 0.08); setTimeout(() => beep(880, 0.1), 80); };
 
+// ---------- 图层 ----------
 function mkImg(src, z) {
   const img = document.createElement("img");
   img.src = src;
@@ -165,7 +401,10 @@ function mkImg(src, z) {
   return img;
 }
 
-// 每个品类一张图层 img，换装只改 src
+const bodyImg = mkImg("res/body/body_00.webp", BODY_Z);
+bodyImg.onload = () => spinner.classList.add("hide");
+stage.appendChild(bodyImg);
+
 const layerImgs = {};
 for (const c of CATS) {
   const img = mkImg("", c.z);
@@ -174,23 +413,28 @@ for (const c of CATS) {
   layerImgs[c.key] = img;
 }
 
-let activeCat = "hair";
-
-function refresh() {
+// ---------- 渲染 ----------
+function refresh(silent) {
   const dressWorn = !!wearing["dress"];
   for (const c of CATS) {
     const img = layerImgs[c.key];
     const v = wearing[c.key];
-    // 穿连衣裙时隐藏 top/bottom
     const isHidden = dressWorn && (c.key === "top" || c.key === "bottom");
     if (v && !isHidden) {
-      img.src = `res/${c.key}/${c.key}_${v}.webp`;
+      const src = `res/${c.key}/${c.key}_${v}.webp`;
+      if (!img.src.endsWith(src)) {
+        img.classList.remove("fade");
+        img.src = src;
+        void img.offsetWidth;      // 触发重排，让淡入动画重播
+        img.classList.add("fade");
+      }
       img.style.display = "";
     } else {
       img.style.display = "none";
     }
   }
   renderGrid();
+  if (!silent) sfxWear();
 }
 
 function renderTabs() {
@@ -198,8 +442,8 @@ function renderTabs() {
   for (const c of CATS) {
     const b = document.createElement("button");
     b.className = "tab" + (c.key === activeCat ? " active" : "");
-    b.textContent = c.name;
-    b.onclick = () => { activeCat = c.key; renderTabs(); renderGrid(); };
+    b.innerHTML = `<span class="ico">${c.ico}</span><span>${c.name}</span>`;
+    b.onclick = () => { activeCat = c.key; sfxTab(); renderTabs(); renderGrid(); };
     tabsEl.appendChild(b);
   }
 }
@@ -208,11 +452,10 @@ function renderGrid() {
   const c = CATS.find(x => x.key === activeCat);
   gridEl.innerHTML = "";
 
-  // 「脱掉」选项
   const none = document.createElement("button");
   none.className = "item none" + (!wearing[c.key] ? " active" : "");
   none.textContent = "脱掉";
-  none.onclick = () => { wearing[c.key] = null; refresh(); };
+  none.onclick = () => { wearing[c.key] = null; sfxRemove(); refresh(true); };
   gridEl.appendChild(none);
 
   for (let i = 1; i <= c.count; i++) {
@@ -220,29 +463,143 @@ function renderGrid() {
     const b = document.createElement("button");
     b.className = "item" + (wearing[c.key] === v ? " active" : "");
     const img = document.createElement("img");
-    img.src = `res/${c.key}/${c.key}_${v}.webp`;
+    img.src = `res/thumbs/${c.key}_${v}.webp`;
+    img.loading = "lazy";
+    img.alt = c.name + i;
     b.appendChild(img);
     b.onclick = () => { wearing[c.key] = v; refresh(); };
     gridEl.appendChild(b);
   }
 }
 
+// ---------- 保存穿搭图 ----------
+async function composeCanvas(scale = 1) {
+  const W = 1024 * scale, H = 1536 * scale;
+  const cv = document.createElement("canvas");
+  cv.width = W;
+  cv.height = H;
+  const ctx = cv.getContext("2d");
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, "#fffdfa");
+  bg.addColorStop(1, "#f6edff");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  const layers = [bodyImg, ...CATS.map(c => layerImgs[c.key])]
+    .filter(im => im.style.display !== "none" && im.src)
+    .sort((a, b) => (+a.style.zIndex) - (+b.style.zIndex));
+  for (const im of layers) {
+    if (!im.complete) {
+      await new Promise(r => { im.onload = r; im.onerror = r; });
+    }
+    ctx.drawImage(im, 0, 0, W, H);
+  }
+  return cv;
+}
+
+async function saveOutfit() {
+  try {
+    const cv = await composeCanvas(1);
+    const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+    const file = new File([blob], "换装.png", { type: "image/png" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: "我的换装" });
+      sfxSave();
+      return;
+    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "换装.png";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+    sfxSave();
+    toast("已保存，去相册或下载里看看～");
+  } catch (e) {
+    toast("保存失败，试试长按角色截图");
+  }
+}
+
+// ---------- 套装收藏 ----------
+function loadSets() {
+  try { return JSON.parse(localStorage.getItem(SETS_KEY)) || []; }
+  catch (e) { return []; }
+}
+function storeSets(sets) {
+  try { localStorage.setItem(SETS_KEY, JSON.stringify(sets)); } catch (e) {}
+}
+
+async function keepOutfit() {
+  const sets = loadSets();
+  if (sets.length >= MAX_SETS) {
+    toast(`最多收藏 ${MAX_SETS} 套，先删掉几套吧`);
+    return;
+  }
+  const cv = await composeCanvas(0.22);
+  const thumb = cv.toDataURL("image/jpeg", 0.72);
+  sets.push({ id: Date.now(), wearing: { ...wearing }, thumb });
+  storeSets(sets);
+  renderSets();
+  sfxKeep();
+  toast("已收藏这套 💖");
+}
+
+function renderSets() {
+  const sets = loadSets();
+  setsListEl.innerHTML = "";
+  setsHintEl.textContent = sets.length ? `${sets.length}/${MAX_SETS}` : "点「收藏这套」存下搭配";
+  sets.forEach(s => {
+    const d = document.createElement("div");
+    d.className = "set";
+    const img = document.createElement("img");
+    img.src = s.thumb;
+    d.appendChild(img);
+    const del = document.createElement("button");
+    del.className = "del";
+    del.textContent = "×";
+    del.onclick = (ev) => {
+      ev.stopPropagation();
+      storeSets(loadSets().filter(x => x.id !== s.id));
+      renderSets();
+    };
+    d.appendChild(del);
+    d.onclick = () => {
+      for (const c of CATS) wearing[c.key] = s.wearing[c.key] || null;
+      sfxTab();
+      refresh(true);
+      toast("套装已穿上");
+    };
+    setsListEl.appendChild(d);
+  });
+}
+
+// ---------- 提示 ----------
+let toastTimer = null;
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1800);
+}
+
+// ---------- 按钮 ----------
 document.getElementById("btnRandom").onclick = () => {
   for (const c of CATS) {
-    const total = c.count + 1;   // 含「不穿」
-    const r = Math.floor(Math.random() * total);
+    const r = Math.floor(Math.random() * (c.count + 1));
     wearing[c.key] = r === 0 ? null : String(r).padStart(2, "0");
   }
   refresh();
 };
-
 document.getElementById("btnReset").onclick = () => {
   for (const c of CATS) wearing[c.key] = null;
-  refresh();
+  refresh(true);
+  sfxRemove();
 };
+document.getElementById("btnSave").onclick = saveOutfit;
+document.getElementById("btnKeep").onclick = keepOutfit;
 
 renderTabs();
-refresh();
+refresh(true);
+renderSets();
 </script>
 </body>
 </html>

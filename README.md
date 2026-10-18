@@ -8,10 +8,14 @@ https://zjhhl.github.io/dressup-game/
 
 ## 玩法
 
-- 左侧是角色，右侧分类切换：发型 / 鞋子 / 上衣 / 下装 / 连衣裙 / 饰品
+- 角色在上/左，分类面板切换：发型 / 鞋子 / 上衣 / 下装 / 连衣裙 / 饰品
 - 点缩略图即换，每个分类都有「脱掉」
 - 穿连衣裙会自动隐藏上衣和下装
-- 「随机穿搭」一键配一套，配合「重置」重来
+- **随机穿搭**：一键配一套；**重置**：全部脱掉
+- **保存穿搭图**：把当前穿搭合成为一张图，手机上可直接分享到微信/相册
+- **收藏这套**：把喜欢的搭配存进「我的套装」，点缩略图一键穿回（存在浏览器本地，最多 8 套）
+- 换装、切分类、收藏都有音效（Web Audio 程序化生成，无音频文件）
+- 手机竖屏自动切换为上下布局，触摸友好
 
 ## 本地运行
 
@@ -28,10 +32,12 @@ python3 -m http.server 8000
 ```
 index.html                  游戏本体（单文件，零依赖）
 res/                        游戏素材（透明 webp，按品类分目录）
+res/thumbs/                 分类面板缩略图（按部位裁切后缩小）
 docs/素材生成描述.md          AI 生图 prompt 全文档（素体+26 件部件）
-docs/素材重出清单.md          素材问题清单与重出指引
+docs/素材重出清单.md          素材检查结果与重出指引
 tools/process_assets.py      素材批处理：去水印→绿幕抠图→裁切→差分→对齐
 tools/to_webp.py             PNG 批量转 webp
+tools/make_thumbs.py         生成分类面板缩略图
 ```
 
 ## 素材流水线
@@ -52,6 +58,7 @@ tools/to_webp.py             PNG 批量转 webp
 ```bash
 python3 tools/process_assets.py   # 重新处理
 python3 tools/to_webp.py          # 转 webp
+python3 tools/make_thumbs.py      # 生成缩略图
 ```
 
 细节见 `docs/素材重出清单.md`。
