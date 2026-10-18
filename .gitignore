@@ -1,0 +1,13 @@
+# 原始绿幕素材（体积大，仅本地保留）
+assets/
+
+# 处理后 PNG 中间产物（游戏加载 webp，png 仅本地保留）
+res/**/*.png
+
+# 根目录的调试/验证截图
+*.png
+
+# 临时文件
+_demo.html
+__pycache__/
+.DS_Store

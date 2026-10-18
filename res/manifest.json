@@ -1,0 +1,460 @@
+{
+  "canvas": [
+    1024,
+    1536
+  ],
+  "z": {
+    "shoes": 5,
+    "bottom": 15,
+    "body": 10,
+    "top": 20,
+    "dress": 20,
+    "hair": 10,
+    "acc": 30
+  },
+  "render_order": [
+    "body",
+    "shoes",
+    "hair",
+    "bottom",
+    "top",
+    "dress",
+    "acc"
+  ],
+  "hide_when_dress": [
+    "top",
+    "bottom"
+  ],
+  "note": "素体是 z=0 的底；鞋必须画在素体之上，否则会被素体的脚盖住（文档第十节把 shoes 写成 5、素体身体写成 10，照数字顺序画鞋会消失）。",
+  "items": {
+    "body_00": {
+      "cat": "body",
+      "z": 10,
+      "px": 568999,
+      "crop": [
+        0,
+        0,
+        1024,
+        1536
+      ],
+      "full": "full/body/body_00.png",
+      "cropped": "body/body_00.png"
+    },
+    "hair_01": {
+      "cat": "hair",
+      "z": 10,
+      "px": 31002,
+      "crop": [
+        99,
+        60,
+        835,
+        1244
+      ],
+      "full": "full/hair/hair_01.png",
+      "cropped": "hair/hair_01.png"
+    },
+    "hair_02": {
+      "cat": "hair",
+      "z": 10,
+      "px": 328427,
+      "crop": [
+        99,
+        60,
+        835,
+        1244
+      ],
+      "full": "full/hair/hair_02.png",
+      "cropped": "hair/hair_02.png"
+    },
+    "hair_03": {
+      "cat": "hair",
+      "z": 10,
+      "px": 290123,
+      "crop": [
+        99,
+        60,
+        835,
+        1244
+      ],
+      "full": "full/hair/hair_03.png",
+      "cropped": "hair/hair_03.png"
+    },
+    "hair_04": {
+      "cat": "hair",
+      "z": 10,
+      "px": 231250,
+      "crop": [
+        99,
+        60,
+        835,
+        1244
+      ],
+      "full": "full/hair/hair_04.png",
+      "cropped": "hair/hair_04.png"
+    },
+    "hair_05": {
+      "cat": "hair",
+      "z": 10,
+      "px": 202810,
+      "crop": [
+        99,
+        60,
+        835,
+        1244
+      ],
+      "full": "full/hair/hair_05.png",
+      "cropped": "hair/hair_05.png"
+    },
+    "hair_06": {
+      "cat": "hair",
+      "z": 10,
+      "px": 395468,
+      "crop": [
+        99,
+        60,
+        835,
+        1244
+      ],
+      "full": "full/hair/hair_06.png",
+      "cropped": "hair/hair_06.png"
+    },
+    "top_01": {
+      "cat": "top",
+      "z": 20,
+      "px": 163855,
+      "crop": [
+        263,
+        589,
+        503,
+        667
+      ],
+      "full": "full/top/top_01.png",
+      "cropped": "top/top_01.png"
+    },
+    "top_02": {
+      "cat": "top",
+      "z": 20,
+      "px": 1546,
+      "crop": [
+        263,
+        589,
+        503,
+        667
+      ],
+      "full": "full/top/top_02.png",
+      "cropped": "top/top_02.png"
+    },
+    "top_03": {
+      "cat": "top",
+      "z": 20,
+      "px": 95845,
+      "crop": [
+        263,
+        589,
+        503,
+        667
+      ],
+      "full": "full/top/top_03.png",
+      "cropped": "top/top_03.png"
+    },
+    "top_04": {
+      "cat": "top",
+      "z": 20,
+      "px": 144658,
+      "crop": [
+        263,
+        589,
+        503,
+        667
+      ],
+      "full": "full/top/top_04.png",
+      "cropped": "top/top_04.png"
+    },
+    "top_05": {
+      "cat": "top",
+      "z": 20,
+      "px": 146766,
+      "crop": [
+        263,
+        589,
+        503,
+        667
+      ],
+      "full": "full/top/top_05.png",
+      "cropped": "top/top_05.png"
+    },
+    "top_06": {
+      "cat": "top",
+      "z": 20,
+      "px": 169310,
+      "crop": [
+        263,
+        589,
+        503,
+        667
+      ],
+      "full": "full/top/top_06.png",
+      "cropped": "top/top_06.png"
+    },
+    "bottom_01": {
+      "cat": "bottom",
+      "z": 15,
+      "px": 50256,
+      "crop": [
+        266,
+        842,
+        445,
+        608
+      ],
+      "full": "full/bottom/bottom_01.png",
+      "cropped": "bottom/bottom_01.png"
+    },
+    "bottom_02": {
+      "cat": "bottom",
+      "z": 15,
+      "px": 93474,
+      "crop": [
+        266,
+        842,
+        445,
+        608
+      ],
+      "full": "full/bottom/bottom_02.png",
+      "cropped": "bottom/bottom_02.png"
+    },
+    "bottom_03": {
+      "cat": "bottom",
+      "z": 15,
+      "px": 126504,
+      "crop": [
+        266,
+        842,
+        445,
+        608
+      ],
+      "full": "full/bottom/bottom_03.png",
+      "cropped": "bottom/bottom_03.png"
+    },
+    "bottom_04": {
+      "cat": "bottom",
+      "z": 15,
+      "px": 74202,
+      "crop": [
+        266,
+        842,
+        445,
+        608
+      ],
+      "full": "full/bottom/bottom_04.png",
+      "cropped": "bottom/bottom_04.png"
+    },
+    "bottom_05": {
+      "cat": "bottom",
+      "z": 15,
+      "px": 98013,
+      "crop": [
+        266,
+        842,
+        445,
+        608
+      ],
+      "full": "full/bottom/bottom_05.png",
+      "cropped": "bottom/bottom_05.png"
+    },
+    "bottom_06": {
+      "cat": "bottom",
+      "z": 15,
+      "px": 36644,
+      "crop": [
+        266,
+        842,
+        445,
+        608
+      ],
+      "full": "full/bottom/bottom_06.png",
+      "cropped": "bottom/bottom_06.png"
+    },
+    "dress_01": {
+      "cat": "dress",
+      "z": 20,
+      "px": 179325,
+      "crop": [
+        216,
+        220,
+        600,
+        1250
+      ],
+      "full": "full/dress/dress_01.png",
+      "cropped": "dress/dress_01.png"
+    },
+    "dress_02": {
+      "cat": "dress",
+      "z": 20,
+      "px": 194175,
+      "crop": [
+        216,
+        220,
+        600,
+        1250
+      ],
+      "full": "full/dress/dress_02.png",
+      "cropped": "dress/dress_02.png"
+    },
+    "dress_03": {
+      "cat": "dress",
+      "z": 20,
+      "px": 272344,
+      "crop": [
+        216,
+        220,
+        600,
+        1250
+      ],
+      "full": "full/dress/dress_03.png",
+      "cropped": "dress/dress_03.png"
+    },
+    "dress_04": {
+      "cat": "dress",
+      "z": 20,
+      "px": 166506,
+      "crop": [
+        216,
+        220,
+        600,
+        1250
+      ],
+      "full": "full/dress/dress_04.png",
+      "cropped": "dress/dress_04.png"
+    },
+    "dress_05": {
+      "cat": "dress",
+      "z": 20,
+      "px": 183890,
+      "crop": [
+        216,
+        220,
+        600,
+        1250
+      ],
+      "full": "full/dress/dress_05.png",
+      "cropped": "dress/dress_05.png"
+    },
+    "dress_06": {
+      "cat": "dress",
+      "z": 20,
+      "px": 214615,
+      "crop": [
+        216,
+        220,
+        600,
+        1250
+      ],
+      "full": "full/dress/dress_06.png",
+      "cropped": "dress/dress_06.png"
+    },
+    "shoes_01": {
+      "cat": "shoes",
+      "z": 5,
+      "px": 33034,
+      "crop": [
+        374,
+        1212,
+        276,
+        281
+      ],
+      "full": "full/shoes/shoes_01.png",
+      "cropped": "shoes/shoes_01.png"
+    },
+    "shoes_02": {
+      "cat": "shoes",
+      "z": 5,
+      "px": 26202,
+      "crop": [
+        374,
+        1212,
+        276,
+        281
+      ],
+      "full": "full/shoes/shoes_02.png",
+      "cropped": "shoes/shoes_02.png"
+    },
+    "shoes_03": {
+      "cat": "shoes",
+      "z": 5,
+      "px": 37623,
+      "crop": [
+        374,
+        1212,
+        276,
+        281
+      ],
+      "full": "full/shoes/shoes_03.png",
+      "cropped": "shoes/shoes_03.png"
+    },
+    "shoes_04": {
+      "cat": "shoes",
+      "z": 5,
+      "px": 19898,
+      "crop": [
+        374,
+        1212,
+        276,
+        281
+      ],
+      "full": "full/shoes/shoes_04.png",
+      "cropped": "shoes/shoes_04.png"
+    },
+    "acc_01": {
+      "cat": "acc",
+      "z": 30,
+      "px": 161765,
+      "crop": [
+        85,
+        25,
+        866,
+        1073
+      ],
+      "full": "full/acc/acc_01.png",
+      "cropped": "acc/acc_01.png"
+    },
+    "acc_02": {
+      "cat": "acc",
+      "z": 30,
+      "px": 30647,
+      "crop": [
+        85,
+        25,
+        866,
+        1073
+      ],
+      "full": "full/acc/acc_02.png",
+      "cropped": "acc/acc_02.png"
+    },
+    "acc_03": {
+      "cat": "acc",
+      "z": 30,
+      "px": 85876,
+      "crop": [
+        85,
+        25,
+        866,
+        1073
+      ],
+      "full": "full/acc/acc_03.png",
+      "cropped": "acc/acc_03.png"
+    },
+    "acc_04": {
+      "cat": "acc",
+      "z": 30,
+      "px": 33336,
+      "crop": [
+        85,
+        25,
+        866,
+        1073
+      ],
+      "full": "full/acc/acc_04.png",
+      "cropped": "acc/acc_04.png"
+    }
+  }
+}

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>换装小屋</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", sans-serif;
+    background: linear-gradient(180deg, #ffe9f3 0%, #dff3ff 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .game {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    align-items: stretch;
+  }
+  .stage {
+    position: relative;
+    width: 512px;
+    height: 768px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(200, 120, 160, .25);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .stage img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    user-select: none;
+  }
+  .panel {
+    width: 360px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(140, 160, 220, .25);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  h1 {
+    font-size: 20px;
+    color: #d46a9c;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .tab {
+    border: none;
+    background: #f2f3f7;
+    border-radius: 16px;
+    padding: 6px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #667;
+  }
+  .tab.active {
+    background: #ff8fb8;
+    color: #fff;
+  }
+  .grid {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    align-content: start;
+  }
+  .item {
+    border: 2px solid #eee;
+    border-radius: 12px;
+    background: #fafafa;
+    cursor: pointer;
+    padding: 0;
+    overflow: hidden;
+    aspect-ratio: 2 / 3;
+  }
+  .item.active {
+    border-color: #ff8fb8;
+    background: #fff0f6;
+  }
+  .item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .none {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 13px;
+  }
+  .btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .btns button {
+    flex: 1;
+    border: none;
+    border-radius: 16px;
+    padding: 10px 0;
+    font-size: 15px;
+    cursor: pointer;
+    color: #fff;
+  }
+  #btnRandom { background: #7fb5ff; }
+  #btnReset  { background: #c3c9d4; }
+</style>
+</head>
+<body>
+<div class="game">
+  <div class="stage" id="stage"></div>
+  <div class="panel">
+    <h1>换装小屋</h1>
+    <div class="tabs" id="tabs"></div>
+    <div class="grid" id="grid"></div>
+    <div class="btns">
+      <button id="btnRandom">随机穿搭</button>
+      <button id="btnReset">重置</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 品类定义：z 为图层顺序（小在下），dress 穿上时隐藏的品类
+const CATS = [
+  { key: "hair",   name: "发型",   z: 11, count: 6 },
+  { key: "shoes",  name: "鞋子",   z: 12, count: 4 },
+  { key: "top",    name: "上衣",   z: 13, count: 6 },
+  { key: "bottom", name: "下装",   z: 14, count: 6 },
+  { key: "dress",  name: "连衣裙", z: 15, count: 6, hide: ["top", "bottom"] },
+  { key: "acc",    name: "饰品",   z: 20, count: 4 },
+];
+
+const wearing = {};   // key -> "01".."06" | null
+
+const stage = document.getElementById("stage");
+const tabsEl = document.getElementById("tabs");
+const gridEl = document.getElementById("grid");
+
+// 素体固定底层
+const bodyImg = mkImg("res/body/body_00.webp", 10);
+stage.appendChild(bodyImg);
+
+function mkImg(src, z) {
+  const img = document.createElement("img");
+  img.src = src;
+  img.style.zIndex = z;
+  return img;
+}
+
+// 每个品类一张图层 img，换装只改 src
+const layerImgs = {};
+for (const c of CATS) {
+  const img = mkImg("", c.z);
+  img.style.display = "none";
+  stage.appendChild(img);
+  layerImgs[c.key] = img;
+}
+
+let activeCat = "hair";
+
+function refresh() {
+  const dressWorn = !!wearing["dress"];
+  for (const c of CATS) {
+    const img = layerImgs[c.key];
+    const v = wearing[c.key];
+    // 穿连衣裙时隐藏 top/bottom
+    const isHidden = dressWorn && (c.key === "top" || c.key === "bottom");
+    if (v && !isHidden) {
+      img.src = `res/${c.key}/${c.key}_${v}.webp`;
+      img.style.display = "";
+    } else {
+      img.style.display = "none";
+    }
+  }
+  renderGrid();
+}
+
+function renderTabs() {
+  tabsEl.innerHTML = "";
+  for (const c of CATS) {
+    const b = document.createElement("button");
+    b.className = "tab" + (c.key === activeCat ? " active" : "");
+    b.textContent = c.name;
+    b.onclick = () => { activeCat = c.key; renderTabs(); renderGrid(); };
+    tabsEl.appendChild(b);
+  }
+}
+
+function renderGrid() {
+  const c = CATS.find(x => x.key === activeCat);
+  gridEl.innerHTML = "";
+
+  // 「脱掉」选项
+  const none = document.createElement("button");
+  none.className = "item none" + (!wearing[c.key] ? " active" : "");
+  none.textContent = "脱掉";
+  none.onclick = () => { wearing[c.key] = null; refresh(); };
+  gridEl.appendChild(none);
+
+  for (let i = 1; i <= c.count; i++) {
+    const v = String(i).padStart(2, "0");
+    const b = document.createElement("button");
+    b.className = "item" + (wearing[c.key] === v ? " active" : "");
+    const img = document.createElement("img");
+    img.src = `res/${c.key}/${c.key}_${v}.webp`;
+    b.appendChild(img);
+    b.onclick = () => { wearing[c.key] = v; refresh(); };
+    gridEl.appendChild(b);
+  }
+}
+
+document.getElementById("btnRandom").onclick = () => {
+  for (const c of CATS) {
+    const total = c.count + 1;   // 含「不穿」
+    const r = Math.floor(Math.random() * total);
+    wearing[c.key] = r === 0 ? null : String(r).padStart(2, "0");
+  }
+  refresh();
+};
+
+document.getElementById("btnReset").onclick = () => {
+  for (const c of CATS) wearing[c.key] = null;
+  refresh();
+};
+
+renderTabs();
+refresh();
+</script>
+</body>
+</html>
